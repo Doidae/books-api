@@ -24,9 +24,14 @@ booksRouter.get('/books', (req, res) => {
 booksRouter.get('/:id', (req, res) => {
     Book.findById(req.params.id)
         .then(foundBook => {
-            res.render('show', {
-                book: foundBook
+            if( !foundBook) {
+                return res.status(404).json({error: "Book not found"});
+            }
+            res.json(foundBook)
             })
+        .catch(err => {
+            console.error("Error finding book:", err);
+            res.status(500).json({error: "Internal server error"})
         })
 })
 
